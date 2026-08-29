@@ -76,3 +76,30 @@ CREATE TABLE ma_t_users (
     CONSTRAINT ma_fk_unit_code FOREIGN KEY (unit_code) REFERENCES ma_t_dict_penitentiary_unit(unit_code),
     CONSTRAINT ma_fk_region_code FOREIGN KEY (region_code) REFERENCES ma_t_dict_regions(unit_code)
 );
+
+CREATE TABLE ma_t_promo_visits (
+    user_id NUMBER(6) NOT NULL,
+    date_creation DATE DEFAULT SYSDATE NOT NULL,
+    ip VARCHAR2(30 CHAR),
+    agent VARCHAR2(150 CHAR),
+    fbclid VARCHAR2(200 CHAR),
+    CONSTRAINT ma_fk_user_id_visits FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id)
+);
+
+CREATE TABLE ma_t_promo_recruits (
+    user_id_for NUMBER(6) NOT NULL,
+    user_id_who NUMBER(6) NOT NULL,
+    date_creation DATE DEFAULT SYSDATE NOT NULL,
+    CONSTRAINT ma_fk_user_id_for FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_fk_user_id_who FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id)
+);
+
+CREATE TABLE ma_t_user_logs (
+    session_id NUMBER(16) NOT NULL,
+    user_id NUMBER(6) NOT NULL,
+    login_type CHAR(1) DEFAULT 'y' NOT NULL,
+    CONSTRAINT ma_fk_session_id FOREIGN KEY (session_id) REFERENCES ma_t_sys_server_logs(session_id),
+    CONSTRAINT ma_fk_user_id_logs FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_chk_login_type CHECK (login_type IN ('y', 'n'))
+);
+
