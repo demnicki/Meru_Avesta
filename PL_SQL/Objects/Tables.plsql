@@ -1,37 +1,26 @@
 CREATE TABLE ma_t_sys_languages (
-    lang_code CHAR(2 CHAR) NOT NULL,
+    lang_code CHAR(2 CHAR),
     lang_desc VARCHAR2(50 CHAR),
-    CONSTRAINT ma_pk_lang PRIMARY KEY (lang)    
+    CONSTRAINT ma_pk_lang PRIMARY KEY (lang_code)    
+);
+CREATE TABLE ma_t_sys_currencies (
+    curr_code CHAR(3 CHAR) NOT NULL,
+    CONSTRAINT ma_pk_curr_code PRIMARY KEY (curr_code)
 );
 
 CREATE TABLE ma_t_sys_server_logs (
-    session_id NUMBER(16) NOT NULL,
+    session_id NUMBER(16),
     date_creation DATE DEFAULT SYSDATE NOT NULL,
     ip VARCHAR2(30 CHAR),
     agent VARCHAR2(150 CHAR),
     CONSTRAINT ma_pk_session_id PRIMARY KEY (session_id)
 );
 
-CREATE TABLE ma_t_currencies (
-    curr_code CHAR(3 CHAR) NOT NULL,
-    CONSTRAINT ma_pk_curr_code PRIMARY KEY (curr_code)
-);
-
-CREATE TABLE ma_t_trans_type (
-    type_code CHAR(1 CHAR) NOT NULL,
-    CONSTRAINT ma_pk_type_code PRIMARY KEY (type_code)
-);
-
-CREATE TABLE ma_t_user_status (
-    status_code CHAR(1 CHAR) NOT NULL,
-    CONSTRAINT ma_pk_status_code PRIMARY KEY (status_code)
-);
-
 CREATE TABLE ma_t_dict_currencies (
     curr_code CHAR(3 CHAR) NOT NULL,
     lang_code CHAR(2 CHAR) NOT NULL,
     curr_name VHARCHAR2(30 CHAR),
-    CONSTRAINT ma_fk_curr_code FOREIGN KEY (curr_code) REFERENCES ma_t_currencies(curr_code),
+    CONSTRAINT ma_fk_curr_code FOREIGN KEY (curr_code) REFERENCES ma_t_sys_currencies(curr_code),
     CONSTRAINT ma_fk_lang_code_curr FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
 );
 
@@ -39,7 +28,6 @@ CREATE TABLE ma_t_dict_trans_type (
     type_code CHAR(1 CHAR) NOT NULL,
     lang_code CHAR(2 CHAR) NOT NULL,
     type_name VHARCHAR2(50 CHAR),
-    CONSTRAINT ma_fk_type_code FOREIGN KEY (type_code) REFERENCES ma_t_trans_type(type_code),
     CONSTRAINT ma_fk_lang_code_trans_type FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
 );
 
@@ -47,7 +35,6 @@ CREATE TABLE ma_t_dict_user_status (
     status_code CHAR(1 CHAR) NOT NULL,
     lang_code CHAR(2 CHAR) NOT NULL,
     status_name VARCHAR2(30 CHAR),
-    CONSTRAINT ma_fk_status_code FOREIGN KEY (status_code) REFERENCES ma_t_user_status(status_code),
     CONSTRAINT ma_fk_lang_code_user_status FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
 );
 
@@ -65,4 +52,27 @@ CREATE TABLE ma_t_dict_regions (
     region_name VARCHAR2(100 CHAR),
     CONSTRAINT ma_pk_region_code PRIMARY KEY (region_code),
     CONSTRAINT ma_fk_lang_region FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
+);
+
+CREATE TABLE ma_t_users (
+    user_id NUMBER(6) DEFAULT ma_s_users.NEXTVAL,
+    key CHAR(6 CHAR),
+    date_creation DATE DEFAULT SYSDATE NOT NULL,
+    prisoner_from DATE DEFAULT SYSDATE NOT NULL,
+    prisoner_to DATE DEFAULT SYSDATE NOT NULL,
+    lang_code CHAR(2 CHAR) NOT NULL,
+    it_is_paid CHAR(1) DEFAULT 'y' NOT NULL,
+    pin CHAR(4) NOT NULL,
+    name_user VARCHAR2(250 CHAR),
+    desc_user VARCHAR2(10000 CHAR),
+    user_status CHAR(1) DEFAULT 'c' NOT NULL,
+    unit_code NUMBER(2) NOT NULL,
+    region_code NUMBER(2) NOT NULL,
+    CONSTRAINT ma_pk_user_id PRIMARY KEY (user_id),
+    CONSTRAINT ma_un_key UNIQUE (key),
+    CONSTRAINT ma_fk_lang_code_user FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
+    CONSTRAINT ma_chk_it_is_paid CHECK (it_is_paid IN ('y', 'n')),
+    CONSTRAINT ma_chk_user_status CHECK (user_status IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')),
+    CONSTRAINT ma_fk_unit_code FOREIGN KEY (unit_code) REFERENCES ma_t_dict_penitentiary_unit(unit_code),
+    CONSTRAINT ma_fk_region_code FOREIGN KEY (region_code) REFERENCES ma_t_dict_regions(unit_code)
 );
