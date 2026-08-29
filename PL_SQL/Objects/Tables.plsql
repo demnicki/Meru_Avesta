@@ -71,11 +71,11 @@ CREATE TABLE ma_t_users (
     avatar BLOB,
     CONSTRAINT ma_pk_user_id PRIMARY KEY (user_id),
     CONSTRAINT ma_un_key UNIQUE (key),
-    CONSTRAINT ma_fk_lang_code_user FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
+    CONSTRAINT ma_fk_lang_code_user FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code),
     CONSTRAINT ma_chk_it_is_paid CHECK (it_is_paid IN ('y', 'n')),
     CONSTRAINT ma_chk_user_status CHECK (user_status IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')),
     CONSTRAINT ma_fk_unit_code FOREIGN KEY (unit_code) REFERENCES ma_t_dict_penitentiary_unit(unit_code),
-    CONSTRAINT ma_fk_region_code FOREIGN KEY (region_code) REFERENCES ma_t_dict_regions(unit_code)
+    CONSTRAINT ma_fk_region_code FOREIGN KEY (region_code) REFERENCES ma_t_dict_regions(region_code)
 );
 
 CREATE TABLE ma_t_promo_visits (
@@ -91,8 +91,8 @@ CREATE TABLE ma_t_promo_recruits (
     user_id_for NUMBER(6) NOT NULL,
     user_id_who NUMBER(6) NOT NULL,
     date_creation DATE DEFAULT SYSDATE NOT NULL,
-    CONSTRAINT ma_fk_user_id_for FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
-    CONSTRAINT ma_fk_user_id_who FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id)
+    CONSTRAINT ma_fk_user_id_for FOREIGN KEY (user_id_for) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_fk_user_id_who FOREIGN KEY (user_id_who) REFERENCES ma_t_users(user_id)
 );
 
 CREATE TABLE ma_t_user_logs (
@@ -102,4 +102,62 @@ CREATE TABLE ma_t_user_logs (
     CONSTRAINT ma_fk_session_id FOREIGN KEY (session_id) REFERENCES ma_t_sys_server_logs(session_id),
     CONSTRAINT ma_fk_user_id_logs FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
     CONSTRAINT ma_chk_login_type CHECK (login_type IN ('y', 'n'))
+);
+
+CREATE TABLE ma_t_rooms (
+    room_id NUMBER(6) DEFAULT ma_s_rooms.NEXTVAL,
+    room_name VARCHAR2(250 CHAR),
+    room_user CLOB,
+    CONSTRAINT ma_pk_room_id PRIMARY KEY (room_id)
+);
+
+CREATE TABLE ma_t_guests_room (
+    room_id NUMBER(6) NOT NULL,
+    user_id NUMBER(6) NOT NULL,
+    it_is_mod CHAR(1) DEFAULT 'n' NOT NULL,
+    CONSTRAINT ma_fk_room_id_guests FOREIGN KEY (room_id) REFERENCES ma_t_rooms(room_id),
+    CONSTRAINT ma_fk_user_id_guests FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_chk_it_is_mod CHECK (it_is_mod IN ('y', 'n'))
+);
+
+CREATE TABLE ma_t_posts (
+    post_id NUMBER(6) DEFAULT ma_s_posts.NEXTVAL,
+    room_id NUMBER(6) NOT NULL,
+    user_id NUMBER(6) NOT NULL,
+    date_creation DATE DEFAULT SYSDATE NOT NULL,
+    post_type CHAR(1 CHAR) DEFAULT 'm' NOT NULL,
+    CONSTRAINT ma_pk_post_id PRIMARY KEY (post_id),    
+    CONSTRAINT ma_fk_room_id_posts FOREIGN KEY (room_id) REFERENCES ma_t_rooms(room_id),
+    CONSTRAINT ma_fk_user_id_posts FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_chk_post_type CHECK (post_type IN ('v', 'm', 'p', 'd', 'l'))
+);
+
+CREATE TABLE ma_t_voice_calls (
+    post_id NUMBER(6) NOT NULL,
+    peer_id CHAR(11 CHAR) NOT NULL,
+    CONSTRAINT ma_fk_posts_voice_calls FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+);
+
+CREATE TABLE ma_t_messages (
+    post_id NUMBER(6) NOT NULL,
+    message CLOB,
+    CONSTRAINT ma_fk_posts_messages FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+);
+
+CREATE TABLE ma_t_pictures (
+    post_id NUMBER(6) NOT NULL,
+    picture BLOB,
+    CONSTRAINT ma_fk_posts_pictures FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+);
+
+CREATE TABLE ma_t_documents (
+    post_id NUMBER(6) NOT NULL,
+    document BLOB,
+    CONSTRAINT ma_fk_posts_documents FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+);
+
+CREATE TABLE ma_t_locations (
+    post_id NUMBER(6) NOT NULL,
+    location MDSYS.SDO_GEOMETRY,
+    CONSTRAINT ma_fk_posts_locations FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
 );
