@@ -19,7 +19,7 @@ CREATE TABLE ma_t_sys_server_logs (
 CREATE TABLE ma_t_dict_currencies (
     curr_code CHAR(3 CHAR) NOT NULL,
     lang_code CHAR(2 CHAR) NOT NULL,
-    curr_name VHARCHAR2(30 CHAR),
+    curr_name VARCHAR2(30 CHAR),
     CONSTRAINT ma_fk_curr_code FOREIGN KEY (curr_code) REFERENCES ma_t_sys_currencies(curr_code),
     CONSTRAINT ma_fk_lang_code_curr FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
 );
@@ -27,7 +27,7 @@ CREATE TABLE ma_t_dict_currencies (
 CREATE TABLE ma_t_dict_trans_type (
     type_code CHAR(1 CHAR) NOT NULL,
     lang_code CHAR(2 CHAR) NOT NULL,
-    type_name VHARCHAR2(50 CHAR),
+    type_name VARCHAR2(50 CHAR),
     CONSTRAINT ma_fk_lang_code_trans_type FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
 );
 
@@ -64,10 +64,11 @@ CREATE TABLE ma_t_users (
     it_is_paid CHAR(1) DEFAULT 'y' NOT NULL,
     pin CHAR(4) NOT NULL,
     name_user VARCHAR2(250 CHAR),
-    desc_user VARCHAR2(10000 CHAR),
+    desc_user CLOB,
     user_status CHAR(1) DEFAULT 'c' NOT NULL,
     unit_code NUMBER(2) NOT NULL,
     region_code NUMBER(2) NOT NULL,
+    avatar BLOB,
     CONSTRAINT ma_pk_user_id PRIMARY KEY (user_id),
     CONSTRAINT ma_un_key UNIQUE (key),
     CONSTRAINT ma_fk_lang_code_user FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code)
