@@ -102,4 +102,3 @@ CREATE TABLE ma_t_user_logs (
     CONSTRAINT ma_fk_user_id_logs FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
     CONSTRAINT ma_chk_login_type CHECK (login_type IN ('y', 'n'))
 );
-
