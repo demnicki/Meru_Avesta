@@ -1,5 +1,5 @@
 /*
-
+Defining supported languages.
 */
 BEGIN
 INSERT INTO ma_t_sys_languages (lang_code, lang_desc) VALUES ('PL', 'Polski');
@@ -11,7 +11,7 @@ COMMIT;
 END;
 
 /*
-
+Defining supported foreign currencies.
 */
 BEGIN
 INSERT INTO ma_t_sys_currencies (curr_code) VALUES ('PLN');
@@ -20,7 +20,7 @@ COMMIT;
 END;
 
 /*
-
+Names of foreign currencies in different languages.
 */
 BEGIN
 INSERT INTO ma_t_dict_currencies (curr_code, lang_code, curr_name) VALUES ('PLN', 'PL', 'Złoty polski');
@@ -29,7 +29,7 @@ COMMIT;
 END;
 
 /*
-
+Naming user status in different languages.
 */
 BEGIN
 -- Statusy w języku polskim (PL)
@@ -45,7 +45,7 @@ COMMIT;
 END;
 
 /*
-
+Naming all types of financial operations in a user's account in different languages.
 */
 BEGIN
 INSERT INTO ma_t_dict_trans_type (type_code, lang_code, type_name) VALUES ('a', 'PL', 'Przelew przychodzący');
@@ -57,3 +57,25 @@ INSERT INTO ma_t_dict_trans_type (type_code, lang_code, type_name) VALUES ('f', 
 COMMIT;
 END;
 
+/*
+Determining what region the user lives in.
+*/
+BEGIN
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Dolnośląskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Kujawsko-Pomorskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Lubelskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Lubuskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Łódzkie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Małopolskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Mazowieckie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Opolskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Podkarpackie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Podlaskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Pomorskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Śląskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Świętokrzyskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Warmińsko-Mazurskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Wielkopolskie');
+INSERT INTO ma_t_dict_regions (lang_code, region_name) VALUES ('PL', 'Województwo Zachodniopomorskie');
+COMMIT;
+END;
