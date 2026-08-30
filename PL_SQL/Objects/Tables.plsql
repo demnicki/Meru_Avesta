@@ -139,12 +139,6 @@ CREATE TABLE ma_t_posts (
     CONSTRAINT ma_chk_post_type CHECK (post_type IN ('v', 'm', 'p', 'd', 'l'))
 );
 
-CREATE TABLE ma_t_voice_calls (
-    post_id NUMBER(6) NOT NULL,
-    peer_id CHAR(11 CHAR) NOT NULL,
-    CONSTRAINT ma_fk_posts_voice_calls FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
-);
-
 CREATE TABLE ma_t_messages (
     post_id NUMBER(6) NOT NULL,
     message CLOB,
