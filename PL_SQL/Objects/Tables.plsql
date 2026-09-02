@@ -62,27 +62,42 @@ CREATE TABLE ma_t_dict_regions (
 );
 
 CREATE TABLE ma_t_users (
-    user_id NUMBER(6) DEFAULT ma_s_users.NEXTVAL,
-    key CHAR(6 CHAR),
+    user_id       NUMBER(6) DEFAULT ma_s_users.NEXTVAL,
+    key           CHAR(6 CHAR),
     date_creation DATE DEFAULT SYSDATE NOT NULL,
-    prisoner_from DATE DEFAULT SYSDATE NOT NULL,
-    prisoner_to   DATE DEFAULT SYSDATE NOT NULL,
     lang_code     CHAR(2 CHAR) NOT NULL,
     it_is_paid    CHAR(1) DEFAULT 'y' NOT NULL,
     pin           CHAR(4) NOT NULL,
     name_user     VARCHAR2(250 CHAR),
     desc_user     CLOB,
     user_status   CHAR(1) DEFAULT 'c' NOT NULL,
-    unit_code     NUMBER(2) NOT NULL,
     region_code   NUMBER(2) NOT NULL,
     avatar        BLOB,
     CONSTRAINT ma_pk_user_id PRIMARY KEY (user_id),
-    CONSTRAINT ma_un_key UNIQUE (key),
+    CONSTRAINT ma_uq_key UNIQUE (key),
     CONSTRAINT ma_fk_lang_code_user FOREIGN KEY (lang_code) REFERENCES ma_t_sys_languages(lang_code),
     CONSTRAINT ma_chk_it_is_paid CHECK (it_is_paid IN ('y', 'n')),
     CONSTRAINT ma_chk_user_status CHECK (user_status IN ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')),
-    CONSTRAINT ma_fk_unit_code FOREIGN KEY (unit_code) REFERENCES ma_t_dict_penitentiary_unit(unit_code),
     CONSTRAINT ma_fk_region_code FOREIGN KEY (region_code) REFERENCES ma_t_dict_regions(region_code)
+);
+
+CREATE TABLE ma_t_imprisonment (
+    user_id       NUMBER(6) NOT NULL,
+    unit_code     NUMBER(2) NOT NULL,
+    prisoner_from DATE NOT NULL,
+    prisoner_to   DATE NOT NULL,
+    CONSTRAINT ma_fk_user_id_imprison FOREIGN KEY (user_id) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_uq_user_id_imprison UNIQUE (user_id),
+    CONSTRAINT ma_fk_unit_code_imprison FOREIGN KEY (unit_code) REFERENCES ma_t_dict_penitentiary_unit(unit_code)
+);
+
+CREATE TABLE ma_t_recommendations (
+    user_id_for   NUMBER(6) NOT NULL,
+    user_id_who   NUMBER(6) NOT NULL,
+    date_creation DATE DEFAULT SYSDATE NOT NULL,
+    comm          VARCHAR2(2000 CHAR),
+    CONSTRAINT ma_fk_reco_user_id_for FOREIGN KEY (user_id_for) REFERENCES ma_t_users(user_id),
+    CONSTRAINT ma_fk_reco_user_id_who FOREIGN KEY (user_id_who) REFERENCES ma_t_users(user_id)
 );
 
 CREATE TABLE ma_t_promo_visits (
@@ -112,9 +127,9 @@ CREATE TABLE ma_t_user_logs (
 );
 
 CREATE TABLE ma_t_rooms (
-    room_id NUMBER(6) DEFAULT ma_s_rooms.NEXTVAL,
+    room_id   NUMBER(6) DEFAULT ma_s_rooms.NEXTVAL,
     room_name VARCHAR2(250 CHAR),
-    room_user CLOB,
+    desc_room CLOB,
     CONSTRAINT ma_pk_room_id PRIMARY KEY (room_id)
 );
 
@@ -142,25 +157,29 @@ CREATE TABLE ma_t_posts (
 CREATE TABLE ma_t_messages (
     post_id NUMBER(6) NOT NULL,
     message CLOB,
-    CONSTRAINT ma_fk_posts_messages FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+    CONSTRAINT ma_fk_posts_messages FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id),
+    CONSTRAINT ma_uq_posts_messages UNIQUE (post_id)
 );
 
 CREATE TABLE ma_t_pictures (
     post_id NUMBER(6) NOT NULL,
     picture BLOB,
-    CONSTRAINT ma_fk_posts_pictures FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+    CONSTRAINT ma_fk_posts_pictures FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id),
+    CONSTRAINT ma_uq_posts_pictures UNIQUE (post_id)
 );
 
 CREATE TABLE ma_t_documents (
     post_id  NUMBER(6) NOT NULL,
     document BLOB,
-    CONSTRAINT ma_fk_posts_documents FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+    CONSTRAINT ma_fk_posts_documents FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id),
+    CONSTRAINT ma_uq_posts_documents UNIQUE (post_id)
 );
 
 CREATE TABLE ma_t_locations (
     post_id  NUMBER(6) NOT NULL,
     location MDSYS.SDO_GEOMETRY,
-    CONSTRAINT ma_fk_posts_locations FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id)
+    CONSTRAINT ma_fk_posts_locations FOREIGN KEY (post_id) REFERENCES ma_t_posts(post_id),
+    CONSTRAINT ma_uq_posts_locations UNIQUE (post_id)
 );
 
 CREATE TABLE ma_t_transactions (
