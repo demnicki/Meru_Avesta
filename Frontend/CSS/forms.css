@@ -1,0 +1,15 @@
+.apex-item-text,
+.apex-item-select,
+.apex-item-multi {
+    border-radius: 50px;
+}
+
+.t-Button {
+    border-radius: 50px;
+}
+
+.pin_code_input {
+    max-width: 100px;
+    width: 100%;
+    margin: 0 auto;
+}

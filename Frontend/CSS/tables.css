@@ -1,0 +1,22 @@
+.mirror_table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.mirror_table th,
+.mirror_table td {
+    text-align: center;
+}
+
+.sad_smiley {
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.smiling_smiley {
+    color: green;
+    font-size: 24px;
+    font-weight: bold;
+}
